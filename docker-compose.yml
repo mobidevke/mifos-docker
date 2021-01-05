@@ -1,11 +1,11 @@
-version: '2.4'
+version: '3'
 services:
   mifosx:
     build:
       context: ./mifos
       dockerfile: Dockerfile
     container_name: mifosx
-    restart: always
+    restart: unless-stopped
     ports:
       - '8443:8443'
     networks:
@@ -13,8 +13,6 @@ services:
     depends_on:
       mifos-db-server:
         condition: service_healthy
-      # mifos-sms-server:
-      #   condition: service_healthy
   mifos-db-server:
     build:
       context: ./mysql

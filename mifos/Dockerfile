@@ -2,27 +2,27 @@ FROM tomcat:9-jre8-alpine
 
 RUN apk add --no-cache mysql-client
 
-ADD ./server.xml /usr/local/tomcat/conf/server.xml
+COPY ./server.xml /usr/local/tomcat/conf/server.xml
 
-ADD ./fineract-provider.war /usr/local/tomcat/webapps/fineract-provider.war
+COPY ./fineract-provider.war /usr/local/tomcat/webapps/fineract-provider.war
 
-ADD ./community-app/ /usr/local/tomcat/webapps/community-app
+COPY ./community-app/ /usr/local/tomcat/webapps/community-app
 
 # RUN cd /usr/local/tomcat/webapps/
 
 # RUN mv ROOT OLDROOT && mv community-app ROOT
 
-ADD ./api-docs /usr/local/tomcat/webapps/api-docs
+COPY ./api-docs /usr/local/tomcat/webapps/api-docs
 
 # ADD ./test/ /usr/local/tomcat/webapps/test/ 
 
 RUN cd /root && mkdir .mifosx
 
-ADD ./pentahoReports /root/.mifosx/pentahoReports
+COPY ./pentahoReports /root/.mifosx/pentahoReports
 
-ADD ./libs /usr/local/tomcat/lib
+COPY ./libs /usr/local/tomcat/lib
 
-ADD ./entrypoint.sh /entrypoint.sh
+COPY ./entrypoint.sh /entrypoint.sh
 
 RUN chmod +x /entrypoint.sh
 
