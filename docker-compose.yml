@@ -28,7 +28,9 @@ services:
     healthcheck:
       test: mysqladmin --user=root --password=mysql ping -h localhost
       interval: 5s
-      retries: 20  
+      retries: 20
+    volumes:
+      - dbdata:/var/lib/mysql    
     networks:
       - mifos-network
   #phpmyadmin service
@@ -46,6 +48,13 @@ services:
       UPLOAD_LIMIT: 1000000000
     networks:
       - mifos-network      
+
+#Docker Networks
 networks:
   mifos-network:
     driver: bridge
+
+#Volumes
+volumes:
+  dbdata:
+    driver: local    
