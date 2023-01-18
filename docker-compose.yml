@@ -1,0 +1,60 @@
+version: '3'
+services:
+  #Mifos app service
+  mifosx:
+    build:
+      context: ./mifos
+      dockerfile: Dockerfile
+    container_name: mifosx
+    restart: unless-stopped
+    ports:
+      - '8443:8443'
+    networks:
+      - mifos-network
+    depends_on:
+      mifos-db-server:
+        condition: service_healthy
+  #Mysql db service      
+  mifos-db-server:
+    build:
+      context: ./mysql
+      dockerfile: Dockerfile
+    container_name: mifos-db
+    restart: unless-stopped
+    ports:
+      - '3307:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: mysql
+    healthcheck:
+      test: mysqladmin --user=root --password=mysql ping -h localhost
+      interval: 5s
+      retries: 20
+    volumes:
+      - dbdata:/var/lib/mysql    
+    networks:
+      - mifos-network
+  #phpmyadmin service
+  mifos_phpmyadmin:
+    links:
+      - mifos-db-server
+    image: phpmyadmin/phpmyadmin
+    container_name: mifos_phpmyadmin
+    restart: unless-stopped
+    ports:
+      - '8095:80'
+    environment:
+      PMA_PORT: 3306
+      PMA_HOST: mifos-db-server
+      UPLOAD_LIMIT: 1000000000
+    networks:
+      - mifos-network      
+
+#Docker Networks
+networks:
+  mifos-network:
+    driver: bridge
+
+#Volumes
+volumes:
+  dbdata:
+    driver: local    
